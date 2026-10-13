@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinfonia Sonora - Quiz Comparativo de Acústica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-900 text-slate-800 min-h-full flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <header class="w-full py-4 px-6 bg-slate-900/70 backdrop-blur-md border-b border-slate-700/50 text-white flex justify-between items-center z-10 sticky top-0">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-headphones-simple text-xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-pink-300 to-amber-300">Sinfonia Sonora</h1>
+                <p class="text-xs text-slate-400">Comparação Acústica: Timbre, Altura e Intensidade</p>
+            </div>
+        </div>
+        <div id="top-bar-info" class="hidden items-center space-x-4 bg-slate-800/80 px-4 py-1.5 rounded-full border border-slate-700 text-sm text-white">
+            <span id="turn-indicator" class="font-semibold text-indigo-300">Rodada 1</span>
+            <span class="text-slate-500">|</span>
+            <span id="group-turn-indicator" class="font-bold text-pink-300">Vez do Grupo 1</span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 max-w-5xl mx-auto w-full">
+
+        <!-- SCREEN 1: WELCOME & CONFIG -->
+        <div id="screen-welcome" class="w-full max-w-2xl glass-panel rounded-3xl p-8 shadow-2xl transition-all duration-300">
+            <div class="text-center mb-8">
+                <span class="bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3 inline-block">Quiz Comparativo de Áudio</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3">Compare e Descubra o Som!</h2>
+                <p class="text-slate-600 text-sm sm:text-base">Neste quiz, você SEMPRE ouvirá <span class="text-indigo-600 font-semibold">dois sons diferentes (Som A e Som B)</span> para analisar e comparar a <span class="text-indigo-600 font-semibold">Altura</span>, a <span class="text-pink-600 font-semibold">Intensidade</span> ou o <span class="text-amber-600 font-semibold">Timbre</span>.</p>
+            </div>
+
+            <div class="space-y-6 mb-8">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Quantos grupos vão participar? (2 a 5)</label>
+                    <div class="grid grid-cols-4 gap-3" id="group-count-selector">
+                        <button type="button" onclick="setGroupCount(2)" class="group-btn py-3 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-indigo-700 font-bold text-lg transition-all shadow-sm">2</button>
+                        <button type="button" onclick="setGroupCount(3)" class="group-btn py-3 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700 font-bold text-lg transition-all hover:border-indigo-300">3</button>
+                        <button type="button" onclick="setGroupCount(4)" class="group-btn py-3 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700 font-bold text-lg transition-all hover:border-indigo-300">4</button>
+                        <button type="button" onclick="setGroupCount(5)" class="group-btn py-3 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700 font-bold text-lg transition-all hover:border-indigo-300">5</button>
+                    </div>
+                </div>
+
+                <div id="group-names-container" class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700">Nomes dos Grupos</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="group-inputs-list">
+                        <!-- Injetado via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="goToTheory()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 text-lg">
+                <span>Ver Teoria com Exemplos Comparativos</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- SCREEN 2: THEORY EXPLANATION WITH DUAL SOUND SAMPLES -->
+        <div id="screen-theory" class="hidden w-full max-w-4xl glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-300">
+            <div class="text-center mb-6">
+                <span class="bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-2 inline-block">Módulo Teórico Interativo</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">A Importância da Comparação entre Dois Sons</h2>
+                <p class="text-slate-600 text-sm mt-1">Um som isolado não permite perceber suas qualidades com clareza. Ouça os exemplos <span class="font-bold">Som 1 vs Som 2</span> em cada propriedade:</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Altura Card -->
+                <div class="bg-gradient-to-br from-indigo-50 to-indigo-100/50 border border-indigo-200 p-5 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-3 shadow-md">
+                            <i class="fa-solid fa-wave-square"></i>
+                        </div>
+                        <h3 class="font-bold text-indigo-900 text-lg mb-1">1. Altura</h3>
+                        <p class="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-2">Grave vs Agudo</p>
+                        <p class="text-slate-700 text-xs leading-relaxed mb-4">Compara a frequência da onda. O Som 1 (grave/grosso) é comparado ao Som 2 (agudo/fino).</p>
+                    </div>
+                    <div class="space-y-2">
+                        <button onclick="playTheoryComparison('altura', 1)" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1 shadow">
+                            <i class="fa-solid fa-play"></i><span>Ouvir Som 1 (Grave)</span>
+                        </button>
+                        <button onclick="playTheoryComparison('altura', 2)" class="w-full py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1 shadow">
+                            <i class="fa-solid fa-play"></i><span>Ouvir Som 2 (Agudo)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Intensidade Card -->
+                <div class="bg-gradient-to-br from-pink-50 to-pink-100/50 border border-pink-200 p-5 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-pink-600 text-white flex items-center justify-center font-bold mb-3 shadow-md">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </div>
+                        <h3 class="font-bold text-pink-900 text-lg mb-1">2. Intensidade</h3>
+                        <p class="text-xs font-semibold text-pink-600 uppercase tracking-wide mb-2">Fraco vs Forte</p>
+                        <p class="text-slate-700 text-xs leading-relaxed mb-4">Compara o volume e a amplitude. O Som 1 (fraco/sussurro) é comparado ao Som 2 (forte/forte).</p>
+                    </div>
+                    <div class="space-y-2">
+                        <button onclick="playTheoryComparison('intensidade', 1)" class="w-full py-2 bg-pink-600 hover:bg-pink-700 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1 shadow">
+                            <i class="fa-solid fa-play"></i><span>Ouvir Som 1 (Fraco)</span>
+                        </button>
+                        <button onclick="playTheoryComparison('intensidade', 2)" class="w-full py-2 bg-pink-500 hover:bg-pink-600 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1 shadow">
+                            <i class="fa-solid fa-play"></i><span>Ouvir Som 2 (Forte)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Timbre Card -->
+                <div class="bg-gradient-to-br from-amber-50 to-amber-100/50 border border-amber-200 p-5 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold mb-3 shadow-md">
+                            <i class="fa-solid fa-guitar"></i>
+                        </div>
+                        <h3 class="font-bold text-amber-900 text-lg mb-1">3. Timbre</h3>
+                        <p class="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Cor/Forma Sonora</p>
+                        <p class="text-slate-700 text-xs leading-relaxed mb-4">Compara a identidade de duas fontes sonoras na mesma nota (ex: Som 1 Senoidal vs Som 2 Dente-de-serra).</p>
+                    </div>
+                    <div class="space-y-2">
+                        <button onclick="playTheoryComparison('timbre', 1)" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1 shadow">
+                            <i class="fa-solid fa-play"></i><span>Ouvir Som 1 (Puro)</span>
+                        </button>
+                        <button onclick="playTheoryComparison('timbre', 2)" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold rounded-xl transition flex items-center justify-center space-x-1 shadow">
+                            <i class="fa-solid fa-play"></i><span>Ouvir Som 2 (Rico)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="backToWelcome()" class="w-full sm:w-1/3 py-3.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-2xl transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-arrow-left"></i><span>Voltar</span>
+                </button>
+                <button onclick="startGame()" class="w-full sm:w-2/3 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/25 transition transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 text-lg">
+                    <span>Iniciar Desafio com 50 Perguntas Comparativas</span>
+                    <i class="fa-solid fa-play"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: GAMEPLAY WITH DUAL SOUND BUTTONS -->
+        <div id="screen-game" class="hidden w-full max-w-3xl glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-300">
+            <!-- Header do Jogo & Timer -->
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-200">
+                <div class="flex items-center space-x-3">
+                    <span id="game-badge" class="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-indigo-100 text-indigo-700">Categoria</span>
+                    <span class="text-slate-400 text-sm font-medium">Questão <span id="current-q-num">1</span> de 15</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200">
+                    <i class="fa-solid fa-stopwatch text-indigo-600 animate-pulse"></i>
+                    <span id="timer-display" class="font-mono font-bold text-slate-800 text-lg">20.0s</span>
+                </div>
+            </div>
+
+            <!-- Placar Compacto dos Grupos -->
+            <div id="mini-scoreboard" class="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-6">
+                <!-- Injetado dinamicamente -->
+            </div>
+
+            <!-- Bloco de Pergunta e OBRIGATORIAMENTE DOIS BOTÕES DE SOM -->
+            <div class="mb-6">
+                <h3 id="question-text" class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug mb-4">
+                    Carregando pergunta...
+                </h3>
+
+                <!-- Caixa com OS DOIS SONS OBRIGATÓRIOS -->
+                <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-5 rounded-2xl mb-6 shadow-lg">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300">
+                            <i class="fa-solid fa-headphones"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-indigo-200">Comparação Obrigatória de Dois Sons</h4>
+                            <p class="text-xs text-slate-300">Ouça o Som 1 e o Som 2 para comparar antes de responder.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="playDualSound(1)" id="play-sound-1" class="px-4 py-3 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center space-x-2 cursor-pointer">
+                            <i class="fa-solid fa-play"></i>
+                            <span>Ouvir Som 1</span>
+                        </button>
+                        <button onclick="playDualSound(2)" id="play-sound-2" class="px-4 py-3 bg-pink-600 hover:bg-pink-500 active:bg-pink-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center space-x-2 cursor-pointer">
+                            <i class="fa-solid fa-play"></i>
+                            <span>Ouvir Som 2</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opções de Resposta -->
+            <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                <!-- Injetado dinamicamente -->
+            </div>
+
+            <!-- Botão de Próximo (Escondido até responder) -->
+            <div id="next-container" class="hidden text-right">
+                <button onclick="nextQuestion()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center space-x-2 ml-auto">
+                    <span>Próxima Rodada</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: PODIUM / RESULTS -->
+        <div id="screen-podium" class="hidden w-full max-w-2xl glass-panel rounded-3xl p-8 shadow-2xl text-center transition-all duration-300">
+            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-md">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Fim do Desafio Acústico!</h2>
+            <p class="text-slate-600 mb-8">Veja como os grupos se saíram comparando os sons.</p>
+
+            <div id="podium-ranking" class="space-y-3 mb-8">
+                <!-- Injetado via JS -->
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <button onclick="restartGame()" class="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Jogar Novamente</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-800/60 mt-auto">
+        Sinfonia Sonora &bull; Educação Interativa de Acústica &copy; 2026
+    </footer>
+
+    <script>
+        let groupCount = 2;
+        let groupNames = ['Grupo 1', 'Grupo 2', 'Grupo 3', 'Grupo 4', 'Grupo 5'];
+        let groupScores = [0, 0, 0, 0, 0];
+        let currentGroupIndex = 0;
+        let currentRound = 1;
+        let maxRounds = 15; // 15 rodadas por partida
+        let currentQuestion = null;
+        let questionsList = [];
+        let timerInterval = null;
+        let timeLeft = 20.0;
+        let questionAnswered = false;
+        let audioCtx = null;
+
+        // Banco completo com 50 perguntas comparativas de DOIS SONS
+        const MASTER_QUESTION_BANK = [];
+
+        // Gerador automático das 50 perguntas rigorosamente estruturadas com comparação de dois sons
+        const categoriesData = [
+            { cat: 'Altura', type: 'altura', templates: [
+                { q: "Comparando o Som 1 (grave) e o Som 2 (agudo), qual propriedade acústica diferencia a frequência deles?", a1: "A Altura (frequência da onda)", a2: "A Intensidade sonora", a3: "O Timbre instrumental", a4: "A velocidade de propagação", correct: 0 },
+                { q: "Ouvindo o Som 1 e depois o Som 2, qual deles possui maior altura (frequência mais alta / som mais fino)?", a1: "O Som 2", a2: "O Som 1", a3: "Ambos possuem a mesma altura", a4: "Nenhum deles possui frequência audível", correct: 0 },
+                { q: "Ao tocar o Som 1 (frequência baixa) seguido do Som 2 (frequência alta), percebemos a variação de qual qualidade fisiológica?", a1: "Altura", a2: "Volume", a3: "Duração", a4: "Timbre", correct: 0 },
+                { q: "Entre o Som 1 (rugido grave) e o Som 2 (canto de passarinho agudo), o Som 1 caracteriza-se por ter:", a1: "Menor altura", a2: "Maior altura", a3: "Maior intensidade", a4: "Timbre metálico", correct: 0 },
+                { q: "Comparando duas notas musicais onde o Som 1 é 220Hz e o Som 2 é 440Hz, qual a conclusão correta?", a1: "O Som 2 tem maior altura que o Som 1", a2: "O Som 1 é mais forte que o Som 2", a3: "O Som 2 tem timbre de percussão", a4: "Ambos têm a mesma frequência", correct: 0 },
+                { q: "Ouvindo a transição do Som 1 para o Som 2, nota-se que as vibrações por segundo aumentam. Isso define a:", a1: "Altura do som", a2: "Intensidade em decibéis", a3: "Velocidade do som no ar", a4: "Absorção acústica", correct: 0 },
+                { q: "Quando comparamos uma voz grossa (Som 1) com uma voz fina (Som 2), estamos comparando principalmente:", a1: "A Altura das ondas sonoras", a2: "O Timbre vocal exclusivo", a3: "A Intensidade da energia", a4: "A Pressão atmosférica", correct: 0 },
+                { q: "O Som 1 é um apito grave de navio e o Som 2 é um apito de trânsito. A diferença fundamental entre eles percebida ao compará-los é a:", a1: "Altura", a2: "Intensidade", a3: "Velocidade", a4: "Polarização", correct: 0 },
+                { q: "Se o Som 1 possui frequências lentas e o Som 2 possui frequências rápidas, ao ouvi-los percebemos que o Som 2 é mais:", a1: "Agudo (maior altura)", a2: "Forte (maior intensidade)", a3: "Fraco (menor intensidade)", a4: "Grave (menor altura)", correct: 0 },
+                { q: "Analisando o Som 1 e o Som 2, o ouvinte nota que o segundo é mais agudo. Qual grandeza física explica isso?", a1: "Frequência (Altura)", a2: "Amplitude (Intensidade)", a3: "Harmônicos (Timbre)", a4: "Comprimento de onda no vácuo", correct: 0 },
+                { q: "Comparando uma tuba (Som 1) e um flautim (Som 2), qual propriedade acústica nos permite dizer qual é mais agudo?", a1: "Altura", a2: "Intensidade", a3: "Timbre", a4: "Ressonância", correct: 0 },
+                { q: "Ao escutar o Som 1 e o Som 2, percebe-se que o Som 2 equivale a uma oitava acima. O que dobrou de um som para o outro?", a1: "A frequência (Altura)", a2: "A amplitude (Intensidade)", a3: "A velocidade", a4: "O volume em decibéis", correct: 0 },
+                { q: "O Som 1 e o Som 2 foram gerados na mesma nota, mas em oitavas diferentes. Qual propriedade diferencia ambos?", a1: "Altura", a2: "Intensidade", a3: "Timbre", a4: "Duração", correct: 0 },
+                { q: "Comparando o som de um trovão distante (Som 1) com um estalo elétrico (Som 2), o Som 1 destaca-se por sua:", a1: "Baixa altura (grave)", a2: "Alta intensidade extrema", a3: "Timbre de cordas", a4: "Frequência ultrassônica", correct: 0 },
+                { q: "O professor toca o Som 1 (baixo) e o Som 2 (alto) na escala musical. Os alunos comparam as notas determinando a:", a1: "Altura", a2: "Intensidade", a3: "Amplitudes", a4: "Acústica espacial", correct: 0 },
+                { q: "O Som 1 tem vibração lenta e o Som 2 vibração rápida. Ao compará-los, qual propriedade distingue suas frequências?", a1: "Altura", a2: "Intensidade", a3: "Timbre", a4: "Velocidade", correct: 0 }
+            ]},
+            { cat: 'Intensidade', type: 'intensidade', templates: [
+                { q: "Comparando o Som 1 (sussurro fraco) e o Som 2 (explosão forte), qual propriedade acústica estamos avaliando?", a1: "A Intensidade (volume / amplitude)", a2: "A Altura (frequência)", a3: "O Timbre instrumental", a4: "A velocidade da luz", correct: 0 },
+                { q: "Ouvindo o Som 1 e o Som 2, qual deles possui maior amplitude de onda e soa mais forte?", a1: "O Som 2", a2: "O Som 1", a3: "Ambos têm a mesma intensidade", a4: "Nenhum som produz energia", correct: 0 },
+                { q: "Ao girar o botão de volume, ouvimos o Som 1 (baixo) e o Som 2 (alto). Essa diferença entre eles refere-se à:", a1: "Intensidade", a2: "Altura", a3: "Timbre", a4: "Frequência", correct: 0 },
+                { q: "Entre o Som 1 (fole fraco) e o Som 2 (grito estridente), o Som 2 apresenta:", a1: "Maior intensidade", a2: "Menor intensidade", a3: "Menor altura", a4: "Timbre senoidal puro", correct: 0 },
+                { q: "Comparando uma conversa normal (Som 1) com uma turbina de avião (Som 2), medimos em decibéis a diferença de:", a1: "Intensidade", a2: "Altura", a3: "Timbre", a4: "Velocidade", correct: 0 },
+                { q: "Ouvindo o Som 1 e o Som 2, nota-se que o segundo transporta mais energia mecânica pelo ar. Trata-se da:", a1: "Intensidade", a2: "Altura", a3: "Frequência fundamental", a4: "Difração", correct: 0 },
+                { q: "Quando comparamos o tique-taque de um relógio (Som 1) com o toque de uma sirene (Som 2), percebemos uma grande diferença na:", a1: "Intensidade", a2: "Altura", a3: "Timbre", a4: "Fase", correct: 0 },
+                { q: "O Som 1 é fraco e o Som 2 é forte. A grandeza física associada a essa comparação é a:", a1: "Amplitude da onda (Intensidade)", a2: "Frequência da onda (Altura)", a3: "Harmônicos (Timbre)", a4: "Comprimento de onda", correct: 0 },
+                { q: "Se o Som 1 tem baixa energia e o Som 2 tem altíssima energia sonora, ao compará-los identificamos diferentes:", a1: "Intensidades", a2: "Alturas", a3: "Timbres", a4: "Velocidades", correct: 0 },
+                { q: "Analisando o Som 1 e o Som 2 em um osciloscópio, o segundo tem cristas mais altas. Isso significa que ele tem:", a1: "Maior intensidade", a2: "Maior altura", a3: "Menor timbre", a4: "Velocidade duplicada", correct: 0 },
+                { q: "Comparando dois instrumentos tocando fraco (Som 1) e forte (Som 2), qual qualidade sonora foi modificada?", a1: "Intensidade", a2: "Altura", a3: "Timbre", a4: "Nenhuma", correct: 0 },
+                { q: "Ouvindo o Som 1 e o Som 2, o ouvinte sente desconforto auditivo no segundo som devido à sua alta:", a1: "Intensidade", a2: "Altura", a3: "Frequência", a4: "Duração", correct: 0 },
+                { q: "O Som 1 e o Som 2 possuem a mesma nota, mas um é um sussurro e outro um berro. Eles diferem em:", a1: "Intensidade", a2: "Altura", a3: "Timbre", a4: "Fase", correct: 0 },
+                { q: "Comparando o impacto de uma baqueta leve (Som 1) e uma forte (Som 2) no bumbo, analisamos a:", a1: "Intensidade", a2: "Altura", a3: "Timbre", a4: "Ressonância", correct: 0 },
+                { q: "O Som 1 (baixo) e o Som 2 (alto) foram comparados em um ambiente ruidoso. Qual propriedade permitiu notar o volume?", a1: "Intensidade", a2: "Altura", a3: "Timbre", a4: "Velocidade", correct: 0 },
+                { q: "Ouvindo o Som 1 e o Som 2, a onda sonora do segundo desloca mais moléculas de ar com força. Trata-se da:", a1: "Intensidade", a2: "Altura", a3: "Timbre", a4: "Reflexão", correct: 0 }
+            ]},
+            { cat: 'Timbre', type: 'timbre', templates: [
+                { q: "Comparando o Som 1 (violão) e o Som 2 (piano) tocando exatamente a mesma nota, o que nos permite diferenciá-los?", a1: "O Timbre (harmônicos e forma de onda)", a2: "A Altura (frequência)", a3: "A Intensidade (volume)", a4: "A velocidade do som", correct: 0 },
+                { q: "Ouvindo o Som 1 (diapasão puro) e o Som 2 (trompete), qual propriedade nos mostra a 'cor' de cada som?", a1: "O Timbre", a2: "A Altura", a3: "A Intensidade", a4: "O decibel", correct: 0 },
+                { q: "Ao escutar a voz de duas pessoas diferentes (Som 1 e Som 2) dizendo a mesma frase, distinguimos quem fala pelo:", a1: "Timbre", a2: "Volume", a3: "Grave", a4: "Agudo", correct: 0 },
+                { q: "Comparando o Som 1 (flauta) e o Som 2 (violino), ambos na mesma nota e volume, a diferença perceptível está no:", a1: "Timbre", a2: "Altura", a3: "Intensidade", a4: "Frequência", correct: 0 },
+                { q: "O Som 1 é uma onda senoidal simples e o Som 2 é uma onda complexa com vários harmônicos. O que estamos comparando?", a1: "O Timbre", a2: "A Altura", a3: "A Intensidade", a4: "A amplitude", correct: 0 },
+                { q: "Ouvindo o Som 1 (gato miando) e o Som 2 (cão latindo), a identidade sonora que os distingue é o:", a1: "Timbre", a2: "Altura", a3: "Volume", a4: "Eco", correct: 0 },
+                { q: "Quando comparamos o som de um clarinete (Som 1) com um saxofone (Som 2), notamos texturas acústicas diferentes chamadas de:", a1: "Timbre", a2: "Alturas", a3: "Intensidades", a4: "Fases", correct: 0 },
+                { q: "O Som 1 e o Som 2 têm a mesma altura e volume, mas provêm de fontes materiais distintas. O que os diferencia ao compará-los?", a1: "O Timbre", a2: "A Intensidade", a3: "A Frequência", a4: "A Velocidade", correct: 0 },
+                { q: "Analisando o Som 1 e o Som 2, o segundo possui formantes vocais diferentes que geram uma vogal distinta. Trata-se do:", a1: "Timbre", a2: "Altura", a3: "Volume", a4: "Decibel", correct: 0 },
+                { q: "Comparando uma guitarra com distorção (Som 1) e um violão acústico (Som 2), a característica marcante é o:", a1: "Timbre", a2: "Altura", a3: "Intensidade", a4: "Ressonância", correct: 0 },
+                { q: "O Som 1 e o Som 2 foram gerados por instrumentos de sopro diferentes. A qualidade que identifica cada instrumento é o:", a1: "Timbre", a2: "Altura", a3: "Intensidade", a4: "Velocidade", correct: 0 },
+                { q: "Ouvindo o Som 1 e o Som 2, percebemos que o formato da onda difere devido aos harmônicos secundários. Isso define o:", a1: "Timbre", a2: "Volume", a3: "Altura", a4: "Eco", correct: 0 },
+                { q: "Comparando o som de um prato de bateria (Som 1) com uma nota de piano (Som 2), notamos que o primeiro tem timbre rico em:", a1: "Harmônicos complexos e ruídos", a2: "Frequências puras senoidais", a3: "Baixa altura infinita", a4: "Intensidade zero", correct: 0 },
+                { q: "O professor toca o Som 1 em um sintetizador e o Som 2 em um violão. Os alunos comparam a qualidade sonora, identificando o:", a1: "Timbre", a2: "Altura", a3: "Intensidade", a4: "Fase", correct: 0 },
+                { q: "O Som 1 e o Som 2 são a mesma nota e volume, mas um é soprado e o outro friccionado com arco. A comparação revela diferenças de:", a1: "Timbre", a2: "Altura", a3: "Intensidade", a4: "Velocidade", correct: 0 },
+                { q: "Analisando o Som 1 e o Som 2, conclui-se que o timbre é a propriedade que funciona como a:", a1: "'Impressão digital' do som", a2: "'Velocidade final' da onda", a3: "'Pressão máxima' em decibéis", a4: "'Frequência básica' absoluta", correct: 0 }
+            ]},
+            { cat: 'Misto', type: 'misto', templates: [
+                { q: "Comparando o Som 1 (apito agudo e forte) e o Som 2 (vento grave e fraco), quais propriedades estão sendo contrastadas?", a1: "Altura e Intensidade simultaneamente", a2: "Apenas o Timbre vocal", a3: "Apenas a velocidade da luz", a4: "Nenhuma propriedade acústica", correct: 0 },
+                { q: "Ouvindo o Som 1 e o Som 2, percebe-se que o primeiro mudou de frequência e o segundo mudou de volume. O que foi comparado?", a1: "Altura e Intensidade", a2: "Apenas Timbre", a3: "Velocidade e Eco", a4: "Refração e Difração", correct: 0 }
+            ]}
+        ];
+
+        // Preenche o Master Bank com 50 perguntas variadas e consistentes
+        let qCounter = 1;
+        while (MASTER_QUESTION_BANK.length < 50) {
+            for (let group of categoriesData) {
+                for (let t of group.templates) {
+                    if (MASTER_QUESTION_BANK.length >= 50) break;
+                    MASTER_QUESTION_BANK.push({
+                        category: group.cat,
+                        type: group.type,
+                        title: t.q,
+                        options: [
+                            { text: t.a1, correct: true },
+                            { text: t.a2, correct: false },
+                            { text: t.a3, correct: false },
+                            { text: t.a4, correct: false }
+                        ]
+                    });
+                }
+            }
+        }
+
+        window.onload = function() {
+            renderGroupInputs();
+        };
+
+        function setGroupCount(count) {
+            groupCount = count;
+            document.querySelectorAll('.group-btn').forEach((btn, idx) => {
+                if ((idx + 2) === count) {
+                    btn.className = "group-btn py-3 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-indigo-700 font-bold text-lg transition-all shadow-sm";
+                } else {
+                    btn.className = "group-btn py-3 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700 font-bold text-lg transition-all hover:border-indigo-300";
+                }
+            });
+            renderGroupInputs();
+        }
+
+        function renderGroupInputs() {
+            const container = document.getElementById('group-inputs-list');
+            container.innerHTML = '';
+            for (let i = 0; i < groupCount; i++) {
+                container.innerHTML += `
+                    <div>
+                        <input type="text" id="group-name-${i}" value="${groupNames[i]}" placeholder="Nome do Grupo ${i+1}" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium bg-white">
+                    </div>
+                `;
+            }
+        }
+
+        function goToTheory() {
+            for (let i = 0; i < groupCount; i++) {
+                const val = document.getElementById(`group-name-${i}`).value.trim();
+                if (val) groupNames[i] = val;
+            }
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-theory').classList.remove('hidden');
+        }
+
+        function backToWelcome() {
+            document.getElementById('screen-theory').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+
+        function startGame() {
+            document.getElementById('screen-theory').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+            document.getElementById('top-bar-info').classList.remove('hidden');
+            document.getElementById('top-bar-info').classList.add('flex');
+
+            questionsList = [...MASTER_QUESTION_BANK].sort(() => 0.5 - Math.random()).slice(0, maxRounds);
+            currentRound = 1;
+            currentGroupIndex = 0;
+            groupScores = new Array(groupCount).fill(0);
+
+            loadQuestion();
+        }
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Som demonstrativo para o módulo teórico (Lado a Lado: Som 1 vs Som 2)
+        function playTheoryComparison(property, soundNumber) {
+            initAudioContext();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (property === 'altura') {
+                osc.type = 'sine';
+                // Som 1 = Grave (220Hz), Som 2 = Agudo (880Hz)
+                let freq = (soundNumber === 1) ? 220 : 880;
+                osc.frequency.setValueAtTime(freq, now);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+                osc.start(now);
+                osc.stop(now + 1.0);
+            } else if (property === 'intensidade') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                // Som 1 = Fraco (volume baixo), Som 2 = Forte (volume alto)
+                let vol = (soundNumber === 1) ? 0.04 : 0.35;
+                gain.gain.setValueAtTime(vol, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+                osc.start(now);
+                osc.stop(now + 1.0);
+            } else if (property === 'timbre') {
+                // Som 1 = Senoidal pura, Som 2 = Dente-de-serra rico
+                osc.type = (soundNumber === 1) ? 'sine' : 'sawtooth';
+                osc.frequency.setValueAtTime(330, now);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                osc.start(now);
+                osc.stop(now + 1.2);
+            }
+        }
+
+        // Reprodução OBRIGATÓRIA dos Dois Sons na Pergunta (Som 1 e Som 2)
+        function playDualSound(soundNumber) {
+            initAudioContext();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            const qType = currentQuestion.type;
+
+            if (qType === 'altura') {
+                // Som 1: Grave (180Hz), Som 2: Agudo (780Hz)
+                let freq = (soundNumber === 1) ? 180 : 780;
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                osc.start(now);
+                osc.stop(now + 1.2);
+            } else if (qType === 'intensidade') {
+                // Som 1: Fraco (vol 0.05), Som 2: Forte (vol 0.35)
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                let vol = (soundNumber === 1) ? 0.05 : 0.35;
+                gain.gain.setValueAtTime(vol, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                osc.start(now);
+                osc.stop(now + 1.2);
+            } else if (qType === 'timbre') {
+                // Som 1: Onda Senoidal, Som 2: Onda Dente de Serra
+                osc.type = (soundNumber === 1) ? 'sine' : 'sawtooth';
+                osc.frequency.setValueAtTime(330, now);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
+                osc.start(now);
+                osc.stop(now + 1.4);
+            } else {
+                // Misto: Som 1 (Grave/Fraco), Som 2 (Agudo/Forte)
+                osc.type = (soundNumber === 1) ? 'sine' : 'sawtooth';
+                let freq = (soundNumber === 1) ? 200 : 660;
+                let vol = (soundNumber === 1) ? 0.08 : 0.25;
+                osc.frequency.setValueAtTime(freq, now);
+                gain.gain.setValueAtTime(vol, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                osc.start(now);
+                osc.stop(now + 1.2);
+            }
+
+            showToast(`Reproduzindo Som ${soundNumber} com sucesso!`, 'success');
+        }
+
+        function loadQuestion() {
+            questionAnswered = false;
+            timeLeft = 20.0;
+            clearInterval(timerInterval);
+
+            currentQuestion = questionsList[currentRound - 1];
+
+            document.getElementById('current-q-num').innerText = currentRound;
+            document.getElementById('game-badge').innerText = currentQuestion.category;
+            document.getElementById('question-text').innerText = currentQuestion.title;
+            document.getElementById('timer-display').innerText = "20.0s";
+            document.getElementById('next-container').classList.add('hidden');
+
+            document.getElementById('turn-indicator').innerText = `Rodada ${currentRound}/${maxRounds}`;
+            document.getElementById('group-turn-indicator').innerText = `Vez de: ${groupNames[currentGroupIndex]}`;
+
+            renderMiniScoreboard();
+
+            // Embaralhar opções
+            const shuffledOptions = [...currentQuestion.options].sort(() => 0.5 - Math.random());
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            shuffledOptions.forEach((opt, idx) => {
+                optionsContainer.innerHTML += `
+                    <button onclick="handleAnswer(this, ${opt.correct})" class="option-btn text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-indigo-500 hover:bg-indigo-50/50 transition-all font-medium text-slate-800 text-sm sm:text-base flex items-start space-x-3 shadow-sm">
+                        <span class="w-6 h-6 rounded-full bg-slate-100 border border-slate-300 text-slate-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span>
+                        <span class="flex-grow">${opt.text}</span>
+                    </button>
+                `;
+            });
+
+            // Inicia o cronômetro no momento exato em que a questão aparece e os sons estão liberados
+            startTimer();
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (questionAnswered) return;
+                timeLeft -= 0.1;
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                    clearInterval(timerInterval);
+                    timeOutAnswer();
+                }
+                document.getElementById('timer-display').innerText = timeLeft.toFixed(1) + 's';
+            }, 100);
+        }
+
+        function handleAnswer(btnElement, isCorrect) {
+            if (questionAnswered) return;
+            questionAnswered = true;
+            clearInterval(timerInterval);
+
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => {
+                b.disabled = true;
+                const textSpan = b.querySelector('span:nth-child(2)').innerText;
+                const matchesOption = currentQuestion.options.find(o => o.text === textSpan);
+                if (matchesOption && matchesOption.correct) {
+                    b.classList.remove('border-slate-200', 'bg-white');
+                    b.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900', 'font-bold');
+                }
+            });
+
+            if (isCorrect) {
+                btnElement.classList.remove('border-slate-200', 'bg-white');
+                btnElement.classList.add('border-emerald-500', 'bg-emerald-100', 'text-emerald-900', 'font-bold');
+
+                let speedBonus = Math.round(timeLeft * 3.5);
+                let earnedPoints = 100 + speedBonus;
+                groupScores[currentGroupIndex] += earnedPoints;
+
+                showToast(`+${earnedPoints} pontos para ${groupNames[currentGroupIndex]}! (Acerto + Bônus de Velocidade)`, 'success');
+            } else {
+                btnElement.classList.remove('border-slate-200', 'bg-white');
+                btnElement.classList.add('border-rose-500', 'bg-rose-100', 'text-rose-900', 'font-bold');
+                showToast(`Resposta incorreta! A alternativa correta foi destacada em verde.`, 'error');
+            }
+
+            renderMiniScoreboard();
+            document.getElementById('next-container').classList.remove('hidden');
+        }
+
+        function timeOutAnswer() {
+            if (questionAnswered) return;
+            questionAnswered = true;
+            showToast(`O tempo esgotou! Nenhum ponto computado nesta rodada.`, 'error');
+
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => {
+                b.disabled = true;
+                const textSpan = b.querySelector('span:nth-child(2)').innerText;
+                const matchesOption = currentQuestion.options.find(o => o.text === textSpan);
+                if (matchesOption && matchesOption.correct) {
+                    b.classList.add('border-emerald-500', 'bg-emerald-50');
+                }
+            });
+
+            document.getElementById('next-container').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentGroupIndex = (currentGroupIndex + 1) % groupCount;
+            currentRound++;
+
+            if (currentRound > maxRounds) {
+                showPodium();
+            } else {
+                loadQuestion();
+            }
+        }
+
+        function renderMiniScoreboard() {
+            const sb = document.getElementById('mini-scoreboard');
+            sb.innerHTML = '';
+            for (let i = 0; i < groupCount; i++) {
+                let isCurrent = (i === currentGroupIndex && !questionAnswered);
+                sb.innerHTML += `
+                    <div class="p-2.5 rounded-xl border ${isCurrent ? 'border-indigo-500 bg-indigo-50/80 shadow-md ring-2 ring-indigo-300' : 'border-slate-200 bg-slate-50'} flex flex-col justify-between">
+                        <span class="text-xs font-bold text-slate-600 truncate">${groupNames[i]}</span>
+                        <span class="text-base font-extrabold text-indigo-700">${groupScores[i]} <span class="text-[10px] font-normal text-slate-500">pts</span></span>
+                    </div>
+                `;
+            }
+        }
+
+        function showPodium() {
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('top-bar-info').classList.add('hidden');
+            document.getElementById('screen-podium').classList.remove('hidden');
+
+            let rankings = [];
+            for (let i = 0; i < groupCount; i++) {
+                rankings.push({ name: groupNames[i], score: groupScores[i] });
+            }
+            rankings.sort((a, b) => b.score - a.score);
+
+            const podiumContainer = document.getElementById('podium-ranking');
+            podiumContainer.innerHTML = '';
+
+            rankings.forEach((r, idx) => {
+                let badgeColor = idx === 0 ? 'bg-amber-500 text-white shadow-amber-500/30' : (idx === 1 ? 'bg-slate-400 text-white' : 'bg-amber-700/60 text-white');
+                podiumContainer.innerHTML += `
+                    <div class="flex items-center justify-between p-4 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-xl ${badgeColor} font-extrabold flex items-center justify-center text-sm shadow">${idx + 1}º</span>
+                            <span class="font-bold text-slate-800">${r.name}</span>
+                        </div>
+                        <span class="font-extrabold text-indigo-700 text-lg">${r.score} pts</span>
+                    </div>
+                `;
+            });
+        }
+
+        function restartGame() {
+            document.getElementById('screen-podium').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-2xl text-white font-medium text-sm shadow-2xl z-50 transition-all duration-300 ${type === 'success' ? 'bg-emerald-600' : 'bg-rose-600'}`;
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
